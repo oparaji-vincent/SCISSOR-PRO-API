@@ -1,0 +1,20 @@
+# Disable MultiViews to prevent Apache from serving a similarly named file
+Options -MultiViews
+
+# Enable the rewrite engine
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  
+  # Set the base directory for the rewrite rules
+  RewriteBase /
+  
+  # Exclude API requests from being rewritten
+  RewriteCond %{REQUEST_URI} !^/api [NC]
+  
+  # Only rewrite if the requested resource is not an actual file or directory
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  
+  # Rewrite all other requests to index.php with the original request appended as a query parameter
+  RewriteRule ^(.+)$ index.php?url=$1 [QSA,L]
+</IfModule>
